@@ -10,6 +10,9 @@ COPY . .
 
 RUN npm run build
 
+# Check if build directory exists
+RUN ls -l /app/build
+
 # Nginx to serve the build files
 FROM nginx:alpine
 
