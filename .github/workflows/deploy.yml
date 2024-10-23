@@ -1,4 +1,53 @@
-name: CI/CD Pipeline
+# name: CI/CD Pipeline
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
+
+#       - name: Log in to AWS ECR (Elastic Container Registry)
+#         id: ecr-login
+#         uses: aws-actions/amazon-ecr-login@v2
+#         env:
+#           AWS_REGION: ${{ secrets.AWS_REGION }}
+#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+#       - name: Build and push Docker images
+#         run: |
+#           docker-compose build
+#           docker-compose push
+
+#   deploy:
+#     needs: build
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: SSH into EC2 and Deploy
+#         uses: appleboy/ssh-action@v0.1.4
+#         with:
+#           host: ${{ secrets.EC2_PUBLIC_IP }}
+#           username: ubuntu
+#           key: ${{ secrets.EC2_SSH_KEY }}
+#           script: |
+#             cd /var/www/trading-bot/
+#             git pull
+#             docker-compose pull
+#             docker-compose up -d
+
+
+name: Deploy to AWS
 
 on:
   push:
@@ -6,42 +55,34 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to AWS ECR (Elastic Container Registry)
-        id: ecr-login
-        uses: aws-actions/amazon-ecr-login@v2
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Build and push Docker images
-        run: |
-          docker-compose build
-          docker-compose push
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH into EC2 and Deploy
-        uses: appleboy/ssh-action@v0.1.4
-        with:
-          host: ${{ secrets.EC2_PUBLIC_IP }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /var/www/trading-bot/
-            git pull
-            docker-compose pull
-            docker-compose up -d
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to DockerHub
+      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+    - name: Build and push Docker images
+      run: |
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest ./frontend
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest ./backend
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+
+    - name: SSH into EC2 and Deploy
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.AWS_HOST }}
+        username: ubuntu
+        key: ${{ secrets.AWS_SSH_KEY }}
+        script: |
+          cd /var/www/trading-bot/
+          git pull
+          docker-compose pull
+          docker-compose up -d
