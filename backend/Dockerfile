@@ -2,12 +2,12 @@ FROM python:3.11.3
 
 # Install .NET SDK (replace with the appropriate version)
 RUN apt-get update && \
-    apt-get install -y wget && \
-    wget https://dotnet.microsoft.com/download/dotnet/6.0/thank-you/sdk-6.0.100-linux-x64-binaries -O dotnet.tar.gz && \
-    mkdir -p /usr/share/dotnet && \
-    tar zxf dotnet.tar.gz -C /usr/share/dotnet && \
-    rm dotnet.tar.gz && \
-    ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+    apt-get install -y wget apt-transport-https && \
+    wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb && \
+    dpkg -i packages-microsoft-prod.deb && \
+    apt-get update && \
+    apt-get install -y dotnet-sdk-6.0 && \
+    rm packages-microsoft-prod.deb
 
 WORKDIR /app
 
