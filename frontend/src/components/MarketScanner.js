@@ -6,7 +6,7 @@ const MarketScanner = () => {
   const [opportunities, setOpportunities] = useState();
 
   const scanMarket = async () => {
-    const response = await axios.get("http://localhost:5000/scan_market");
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/scan_market`);
     setOpportunities(response.data);
   };
 

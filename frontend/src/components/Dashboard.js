@@ -22,7 +22,7 @@ const Dashboard = () => {
 
   const startTrade = async () => {
     const response = await axios.post(
-      "http://localhost:5000/start_trade",
+      `${process.env.REACT_APP_API_URL}/start_trade`,
       tradeSettings
     );
     // alert(`Trade executed: ${response.data.result || response.data.error}`);
