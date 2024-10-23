@@ -11,6 +11,6 @@ RUN npm run build
 
 # Serve the static files with nginx
 FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/build /var/www/trading-bot/frontend/build
 
 CMD ["nginx", "-g", "daemon off;"]

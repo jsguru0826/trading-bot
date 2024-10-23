@@ -71,23 +71,6 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Set up Docker Compose CLI
-      run: |
-        sudo apt-get update
-        sudo apt-get install docker-compose -y
-
-    - name: Build and push Docker images
-      run: |
-        # Build and push frontend
-        docker build -t frontend ./frontend
-        docker tag frontend ${{ secrets.DOCKER_USERNAME }}/frontend:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
-
-        # Build and push backend
-        docker build -t backend ./backend
-        docker tag backend ${{ secrets.DOCKER_USERNAME }}/backend:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
-
     - name: SSH into EC2 and Deploy
       uses: appleboy/ssh-action@v0.1.7
       with:
@@ -97,5 +80,12 @@ jobs:
         script: |
           cd /var/www/trading-bot/
           git pull
-          docker-compose pull
-          docker-compose up -d
+
+          cd backend
+          docker build -t backend .
+          docker run -d -p 5000:5000 backend
+          
+          cd ..
+          cd frontend
+          docker build -t frontend .
+
