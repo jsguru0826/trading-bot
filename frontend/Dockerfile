@@ -3,14 +3,16 @@ FROM node:18-alpine as build
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN npm install
 
 COPY . .
+
 RUN npm run build
 
-# Serve the static files with nginx
+# Nginx to serve the build files
 FROM nginx:alpine
-COPY --from=build /app/build /var/www/trading-bot/frontend
 
-CMD ["nginx", "-g", "daemon off;"]
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 80
