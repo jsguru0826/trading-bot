@@ -1,24 +1,24 @@
 # frontend/Dockerfile
-FROM node:18-alpine as build
+# FROM node:18-alpine as build
 
-WORKDIR /app
+# WORKDIR /app
 
-COPY package.json ./
-RUN npm install
+# COPY package.json ./
+# RUN npm install
 
-COPY . .
+# COPY . .
 
-RUN npm run build
+# RUN npm run build
 
-# Check if build directory exists
-RUN ls -l /app/build
+# # Check if build directory exists
+# RUN ls -l /app/build
 
-# Nginx to serve the build files
-FROM nginx:alpine
+# # Nginx to serve the build files
+# FROM nginx:alpine
 
-COPY --from=build /app/build /usr/share/nginx/html
+# COPY --from=build /app/build /usr/share/nginx/html
 
-EXPOSE 80
+# EXPOSE 80
 
 # Start Nginx server
 CMD ["nginx", "-g", "daemon off;"]
