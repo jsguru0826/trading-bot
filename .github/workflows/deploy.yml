@@ -78,10 +78,13 @@ jobs:
 
     - name: Build and push Docker images
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest ./frontend
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest ./backend
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+        docker build -t frontend .
+        docker tag react-app ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+
+        docker build -t backend .
+        docker tag react-app ${{ secrets.DOCKER_USERNAME }}/backend:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
     - name: SSH into EC2 and Deploy
       uses: appleboy/ssh-action@v0.1.7
