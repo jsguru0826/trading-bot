@@ -6,10 +6,10 @@ RUN apt-get update && \
     wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
     apt-get update && \
-    apt-get install -y dotnet-sdk-6.0 && \
-    rm packages-microsoft-prod.deb
-
-RUN sudo apt-get install xvfb
+    apt-get install -y dotnet-sdk-6.0 xvfb && \
+    rm packages-microsoft-prod.deb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -18,4 +18,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["xvfb-run -a python", "app.py"]
+CMD ["xvfb-run", "-a", "python", "app.py"]
