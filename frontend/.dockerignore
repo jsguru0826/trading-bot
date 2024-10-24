@@ -1,0 +1,18 @@
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Ignore build output
+build
+dist
+
+# Logs
+*.log
+logs
+*.log.*
+
+# Ignore git files and folders
+.git
+.gitignore
+
+Dockerfile
