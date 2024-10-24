@@ -75,6 +75,8 @@ class BotManager:
         TRADE_AMOUNT = data['amount']
         TIME_FRAME = data['duration']
         
+        return [TRADE_AMOUNT, TIME_FRAME]
+        
         url = f'{BASE_URL}/en/cabinet/demo-quick-high-low/'
         self.driver = get_driver()
         self.driver.get(url)
@@ -104,8 +106,8 @@ class BotManager:
         self.close_setting_modal()
         # ---------setting amount--------------
             
-        while True:
-            STACK = self.websocket_log(STACK)
+        # while True:
+        #     STACK = self.websocket_log(STACK)
 
     def close_setting_modal(self):
         closed_tab = self.driver.find_element(by=By.CSS_SELECTOR, value='#bar-chart > div > div > div.right-widget-container > div > div.widget-slot__header > div.divider > ul > li:nth-child(2) > a')
