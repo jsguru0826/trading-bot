@@ -30,7 +30,7 @@ const Dashboard = () => {
   };
 
   return (
-    <Card>
+    <Card sx={{ backgroundColor: "#2a3144", color: "white" }}>
       <CardContent>
         <Typography variant="h5" component="h2">
           Start a New Trade
@@ -44,6 +44,17 @@ const Dashboard = () => {
           }
           fullWidth
           margin="normal"
+          InputProps={{
+            style: {
+              color: "white",
+            },
+          }}
+          sx={{
+            backgroundColor: "#1f2334",
+            label: {
+              color: "white",
+            },
+          }}
         />
         <TextField
           label="Asset"
@@ -53,11 +64,28 @@ const Dashboard = () => {
           }
           fullWidth
           margin="normal"
+          InputProps={{
+            style: {
+              color: "white",
+            },
+          }}
+          sx={{
+            backgroundColor: "#1f2334",
+            label: {
+              color: "white",
+            },
+          }}
         />
 
-
-        <FormControl fullWidth sx={{mt:2, mb: 2}}>
-          <InputLabel id="Duration">Duration (time)</InputLabel>
+        <FormControl fullWidth sx={{ mt: 2, mb: 2 }}>
+          <InputLabel
+            id="Duration"
+            sx={{
+              color: "white",
+            }}
+          >
+            Duration (time)
+          </InputLabel>
           <Select
             labelId="Duration"
             id="demo-simple-select"
@@ -66,6 +94,10 @@ const Dashboard = () => {
             onChange={(e) =>
               setTradeSettings({ ...tradeSettings, duration: e.target.value })
             }
+            sx={{
+              backgroundColor: "#1f2334",
+              color: "white",
+            }}
           >
             <MenuItem value="5">5s</MenuItem>
             <MenuItem value="15">15s</MenuItem>
@@ -79,8 +111,15 @@ const Dashboard = () => {
           </Select>
         </FormControl>
 
-        <FormControl fullWidth>
-          <InputLabel id="Direction">Direction</InputLabel>
+        <FormControl fullWidth sx={{ mt: 1 }}>
+          <InputLabel
+            id="Direction"
+            sx={{
+              color: "white",
+            }}
+          >
+            Direction
+          </InputLabel>
           <Select
             labelId="Direction"
             id="demo-simple-select"
@@ -89,6 +128,10 @@ const Dashboard = () => {
             onChange={(e) =>
               setTradeSettings({ ...tradeSettings, direction: e.target.value })
             }
+            sx={{
+              backgroundColor: "#1f2334",
+              color: "white",
+            }}
           >
             <MenuItem value="buy">Buy</MenuItem>
             <MenuItem value="sell">Sell</MenuItem>

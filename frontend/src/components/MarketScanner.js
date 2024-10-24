@@ -20,7 +20,7 @@ const MarketScanner = () => {
   }, []);
 
   return (
-    <Card>
+    <Card sx={{ backgroundColor: "#2a3144", color: "white" }}>
       <CardContent>
         <Typography variant="h5" component="h2" sx={{ mb: 1 }}>
           Market Opportunities

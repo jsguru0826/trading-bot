@@ -21,7 +21,7 @@ const Settings = () => {
   };
 
   return (
-    <Card>
+    <Card sx={{ backgroundColor: "#2a3144", color: "white" }}>
       <CardContent>
         <Typography variant="h5" component="h2">
           Bot Settings
@@ -35,6 +35,17 @@ const Settings = () => {
           }
           fullWidth
           margin="normal"
+          InputProps={{
+            style: {
+              color: "white",
+            },
+          }}
+          sx={{
+            backgroundColor: "#1f2334",
+            label: {
+              color: "white",
+            },
+          }}
         />
         <TextField
           label="Take Profit"
@@ -45,6 +56,17 @@ const Settings = () => {
           }
           fullWidth
           margin="normal"
+          InputProps={{
+            style: {
+              color: "white",
+            },
+          }}
+          sx={{
+            backgroundColor: "#1f2334",
+            label: {
+              color: "white",
+            },
+          }}
         />
         <TextField
           label="Risk Level"
@@ -55,6 +77,17 @@ const Settings = () => {
           }
           fullWidth
           margin="normal"
+          InputProps={{
+            style: {
+              color: "white",
+            },
+          }}
+          sx={{
+            backgroundColor: "#1f2334",
+            label: {
+              color: "white",
+            },
+          }}
         />
         <Button
           variant="contained"

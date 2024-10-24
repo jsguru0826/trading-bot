@@ -11,7 +11,7 @@ const PerformanceTracker = () => {
   };
 
   return (
-    <Card>
+    <Card sx={{ backgroundColor: "#2a3144", color: "white" }}>
       <CardContent>
         <Typography variant="h5" component="h2">
           Performance Tracker

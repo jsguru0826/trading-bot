@@ -79,8 +79,6 @@ class BotManager:
         self.driver = get_driver()
         self.driver.get(url)
         
-        return
-        
         # ---------time frame--------------
         amount = self.driver.find_element(by=By.CSS_SELECTOR, value='#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--expiration-inputs > div.block__control.control > div.control__value.value.value--several-items > div')
         amount.click()
