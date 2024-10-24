@@ -9,6 +9,8 @@ RUN apt-get update && \
     apt-get install -y dotnet-sdk-6.0 && \
     rm packages-microsoft-prod.deb
 
+RUN sudo apt-get install xvfb
+
 WORKDIR /app
 
 COPY requirements.txt .
@@ -16,4 +18,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "app.py"]
+CMD ["xvfb-run -a python", "app.py"]
