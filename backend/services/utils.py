@@ -33,7 +33,8 @@ def get_driver():
     else:
         path_default = ''
 
-    options.add_argument(fr'--user-data-dir={path_default}')
+    # options.add_argument(fr'--user-data-dir={path_default}')
+    options.add_argument('--user-data-dir=/tmp/chrome-user-data')
 
     service = Service()
     driver = webdriver.Chrome(options=options, service=service)
