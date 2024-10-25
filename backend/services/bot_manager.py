@@ -5,6 +5,8 @@ import time
 from datetime import datetime, timedelta
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from services.utils import companies, get_driver
 
@@ -68,42 +70,57 @@ class BotManager:
     
 
     def load_web_driver(self, data):
-        global STACK, PERIOD, TRADE_AMOUNT
-        
-        # we can get parameters from data
-        # PERIOD = data['duration']
-        TRADE_AMOUNT = data['amount']
-        TIME_FRAME = data['duration']
-        
+        global STACK, PERIOD, TRADE_AMOUNT, TIME_FRAME
+        # Assign values from input data
+        TRADE_AMOUNT = data.get('amount', 1)  # Default to 1 if 'amount' not provided
+        TIME_FRAME = data.get('duration', '60')  # Default to '60' if not provided
+
+        # Initialize the web driver
         url = f'{BASE_URL}/en/cabinet/demo-quick-high-low/'
         self.driver = get_driver()
         self.driver.get(url)
-        
-        # ---------time frame--------------
-        amount = self.driver.find_element(by=By.CSS_SELECTOR, value='#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--expiration-inputs > div.block__control.control > div.control__value.value.value--several-items > div')
-        amount.click()
-        self.hand_delay()
-        
-        base = '#modal-root > div > div > div > div.trading-panel-modal__dops.dops > div.dops__timeframes > div:nth-child(%s)'
-        self.driver.find_element(by=By.CSS_SELECTOR, value=base % TIME_NUMBERS[TIME_FRAME]).click()
-        self.hand_delay()
 
-        self.close_setting_modal()
-        # ---------time frame--------------
-        
-        # ---------setting amount--------------
-        amount = self.driver.find_element(by=By.CSS_SELECTOR, value='#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--bet-amount > div.block__control.control > div.control__value.value.value--several-items > div > input[type=text]')
-        amount.click()
-        self.hand_delay()
-        
-        base = '#modal-root > div > div > div > div > div.trading-panel-modal__in > div.virtual-keyboard > div > div:nth-child(%s) > div'
-        for number in str(TRADE_AMOUNT):
-            self.driver.find_element(by=By.CSS_SELECTOR, value=base % NUMBERS[number]).click()
+        # Create WebDriverWait instance
+        wait = WebDriverWait(self.driver, 10)
+
+        try:
+            # --------- Set Time Frame --------------
+            time_frame_element = wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--expiration-inputs > div.block__control.control > div.control__value.value.value--several-items > div'))
+            )
+            time_frame_element.click()
             self.hand_delay()
-            
-        self.close_setting_modal()
-        # ---------setting amount--------------
-            
+
+            # Set time frame selection based on TIME_FRAME
+            base = '#modal-root > div > div > div > div.trading-panel-modal__dops.dops > div.dops__timeframes > div:nth-child(%s)'
+            wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, base % TIME_NUMBERS[TIME_FRAME]))
+            ).click()
+            self.hand_delay()
+            self.close_setting_modal()
+
+            # --------- Set Trade Amount --------------
+            amount_input = wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--bet-amount > div.block__control.control > div.control__value.value.value--several-items > div > input[type=text]'))
+            )
+            amount_input.click()
+            self.hand_delay()
+
+            # Enter trade amount by simulating a virtual keyboard
+            base = '#modal-root > div > div > div > div > div.trading-panel-modal__in > div.virtual-keyboard > div > div:nth-child(%s) > div'
+            for number in str(TRADE_AMOUNT):
+                wait.until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, base % NUMBERS[number]))
+                ).click()
+                self.hand_delay()
+
+            self.close_setting_modal()
+            print("Time frame and trade amount have been set successfully.")
+
+        except Exception as e:
+            print(f"Error during web driver setup: {e}")
+
+        # Initialize websocket log and stack processing
         while True:
             STACK = self.websocket_log(STACK)
 
