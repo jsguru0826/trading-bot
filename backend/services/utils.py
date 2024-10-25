@@ -12,32 +12,41 @@ def get_driver():
     options = Options()
     
     # Enable headless mode
-    options.add_argument('--headless')  # Runs Chrome in headless mode.
-    options.add_argument('--no-sandbox')  # Bypass OS security model.
-    options.add_argument('--disable-dev-shm-usage')  # Overcome limited resource problems.
+    # options.add_argument('--headless')  # Runs Chrome in headless mode.
+    # options.add_argument('--no-sandbox')  # Bypass OS security model.
+    # options.add_argument('--disable-dev-shm-usage')  # Overcome limited resource problems.
     
-    options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
-    options.add_argument('--ignore-ssl-errors')
-    options.add_argument('--ignore-certificate-errors')
-    options.add_argument('--ignore-certificate-errors-spki-list')
+    # options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
+    # options.add_argument('--ignore-ssl-errors')
+    # options.add_argument('--ignore-certificate-errors')
+    # options.add_argument('--ignore-certificate-errors-spki-list')
 
-    username = os.environ.get('USER', os.environ.get('USERNAME'))
-    os_platform = platform.platform().lower()
+    # username = os.environ.get('USER', os.environ.get('USERNAME'))
+    # os_platform = platform.platform().lower()
 
-    if 'macos' in os_platform:
-        path_default = fr'/Users/{username}/Library/Application Support/Google/Chrome/Default'
-    elif 'windows' in os_platform:
-        path_default = fr'C:\Users\{username}\AppData\Local\Google\Chrome\User Data\Default'
-    elif 'linux' in os_platform:
-        path_default = os.path.expanduser('~/.config/google-chrome/Default')
-    else:
-        path_default = ''
+    # if 'macos' in os_platform:
+    #     path_default = fr'/Users/{username}/Library/Application Support/Google/Chrome/Default'
+    # elif 'windows' in os_platform:
+    #     path_default = fr'C:\Users\{username}\AppData\Local\Google\Chrome\User Data\Default'
+    # elif 'linux' in os_platform:
+    #     path_default = os.path.expanduser('~/.config/google-chrome/Default')
+    # else:
+    #     path_default = ''
 
-    # options.add_argument(fr'--user-data-dir={path_default}')
-    options.add_argument('--user-data-dir=/tmp/chrome-user-data')
+    # # options.add_argument(fr'--user-data-dir={path_default}')
+    # options.add_argument('--user-data-dir=/tmp/chrome-user-data')
 
-    service = Service()
-    driver = webdriver.Chrome(options=options, service=service)
+    # service = Service()
+    # driver = webdriver.Chrome(options=options, service=service)
+    
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
+    print("Starting WebDriver...")
+    driver = webdriver.Chrome(options=options)
+    print("WebDriver started successfully!")
 
     return driver
 
