@@ -81,7 +81,7 @@ class BotManager:
         self.driver.get(url)
 
         # Create WebDriverWait instance
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, 30)
 
         try:
             
