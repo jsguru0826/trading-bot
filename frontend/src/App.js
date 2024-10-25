@@ -17,6 +17,7 @@ import "./App.css";
 function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isTradeStart, setIsTradeStart] = useState(false);
+  const [loadingTradeStart, setLoadingTradeStart] = useState(false);
 
   const [tradeSettings, setTradeSettings] = useState({
     amount: 1,
@@ -55,6 +56,8 @@ function App() {
               setIsTradeStart={setIsTradeStart}
               tradeSettings={tradeSettings}
               setTradeSettings={setTradeSettings}
+              setLoadingTradeStart={setLoadingTradeStart}
+              loadingTradeStart={loadingTradeStart}
             />
           </Grid>
         )}

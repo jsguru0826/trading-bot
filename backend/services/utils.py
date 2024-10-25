@@ -10,6 +10,12 @@ from stock_indicators.indicators.common.quote import Quote
 
 def get_driver():
     options = Options()
+    
+    # Enable headless mode
+    options.add_argument('--headless')  # Runs Chrome in headless mode.
+    options.add_argument('--no-sandbox')  # Bypass OS security model.
+    options.add_argument('--disable-dev-shm-usage')  # Overcome limited resource problems.
+    
     options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
     options.add_argument('--ignore-ssl-errors')
     options.add_argument('--ignore-certificate-errors')
@@ -23,7 +29,7 @@ def get_driver():
     elif 'windows' in os_platform:
         path_default = fr'C:\Users\{username}\AppData\Local\Google\Chrome\User Data\Default'
     elif 'linux' in os_platform:
-        path_default = '~/.config/google-chrome/Default'
+        path_default = os.path.expanduser('~/.config/google-chrome/Default')
     else:
         path_default = ''
 

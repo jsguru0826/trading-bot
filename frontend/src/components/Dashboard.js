@@ -9,7 +9,9 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Box,
 } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 
 const Dashboard = ({
@@ -17,14 +19,18 @@ const Dashboard = ({
   setIsTradeStart,
   tradeSettings,
   setTradeSettings,
+  loadingTradeStart,
+  setLoadingTradeStart,
 }) => {
   const startTrade = async () => {
-    // alert(`Trade started`);
-    // setIsTradeStart(true);
+    setLoadingTradeStart(true);
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/start_trade`,
       tradeSettings
     );
+    setLoadingTradeStart(false);
+    setIsTradeStart(true);
+    alert(`Trade started`);
   };
 
   return (
@@ -136,14 +142,17 @@ const Dashboard = ({
           </Select>
         </FormControl>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={!isTradeStart ? startTrade : () => {}}
-          sx={{ mt: 2 }}
-        >
-          {!isTradeStart ? <>Start Trade</> : <>Stop Trade</>}
-        </Button>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 3, mt: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={!isTradeStart ? startTrade : () => {}}
+            disabled={loadingTradeStart}
+          >
+            {!isTradeStart ? <>Start Trade</> : <>Stop Trade</>}
+          </Button>
+          {loadingTradeStart && <><CircularProgress /><div>Starting...</div></>}
+        </Box>
       </CardContent>
     </Card>
   );
