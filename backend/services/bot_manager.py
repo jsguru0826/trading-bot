@@ -84,6 +84,8 @@ class BotManager:
         wait = WebDriverWait(self.driver, 10)
 
         try:
+            
+            print("Setting time frame...")
             # --------- Set Time Frame --------------
             time_frame_element = wait.until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, '#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--expiration-inputs > div.block__control.control > div.control__value.value.value--several-items > div'))
@@ -91,6 +93,7 @@ class BotManager:
             time_frame_element.click()
             self.hand_delay()
 
+            print("Selecting specific time frame...")
             # Set time frame selection based on TIME_FRAME
             base = '#modal-root > div > div > div > div.trading-panel-modal__dops.dops > div.dops__timeframes > div:nth-child(%s)'
             wait.until(
@@ -99,6 +102,7 @@ class BotManager:
             self.hand_delay()
             self.close_setting_modal()
 
+            print("Setting trade amount...")
             # --------- Set Trade Amount --------------
             amount_input = wait.until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, '#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--bet-amount > div.block__control.control > div.control__value.value.value--several-items > div > input[type=text]'))
@@ -106,6 +110,7 @@ class BotManager:
             amount_input.click()
             self.hand_delay()
 
+            print("Entering trade amount using virtual keyboard...")
             # Enter trade amount by simulating a virtual keyboard
             base = '#modal-root > div > div > div > div > div.trading-panel-modal__in > div.virtual-keyboard > div > div:nth-child(%s) > div'
             for number in str(TRADE_AMOUNT):
@@ -115,15 +120,16 @@ class BotManager:
                 self.hand_delay()
 
             self.close_setting_modal()
-            print("Time frame and trade amount have been set successfully.")
+            print("Successfully set time frame and trade amount.")
 
         except Exception as e:
             print(f"Error during web driver setup: {e}")
+            self.driver.quit()  # Close the driver for safety if error occurs
 
-        # Initialize websocket log and stack processing
+        # Start websocket logging and stack processing
         while True:
             STACK = self.websocket_log(STACK)
-
+            
     def close_setting_modal(self):
         closed_tab = self.driver.find_element(by=By.CSS_SELECTOR, value='#bar-chart > div > div > div.right-widget-container > div > div.widget-slot__header > div.divider > ul > li:nth-child(2) > a')
         closed_tab_parent = closed_tab.find_element(by=By.XPATH, value='..')
