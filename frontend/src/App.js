@@ -16,6 +16,14 @@ import "./App.css";
 
 function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [isTradeStart, setIsTradeStart] = useState(false);
+
+  const [tradeSettings, setTradeSettings] = useState({
+    amount: 1,
+    asset: "EUR/USD",
+    duration: "60",
+    direction: "buy", // Added direction (buy/sell)
+  });
 
   return (
     <Container maxWidth="lg">
@@ -42,7 +50,12 @@ function App() {
       <Grid container spacing={2} sx={{ mt: 2 }}>
         {activeTab === "dashboard" && (
           <Grid item xs={12}>
-            <Dashboard />
+            <Dashboard
+              isTradeStart={isTradeStart}
+              setIsTradeStart={setIsTradeStart}
+              tradeSettings={tradeSettings}
+              setTradeSettings={setTradeSettings}
+            />
           </Grid>
         )}
         {activeTab === "settings" && (

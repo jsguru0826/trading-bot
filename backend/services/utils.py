@@ -14,9 +14,6 @@ def get_driver():
     options.add_argument('--ignore-ssl-errors')
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--ignore-certificate-errors-spki-list')
-    options.add_argument('--headless')  # Run in headless mode
-    options.add_argument('--no-sandbox')  # Bypass OS security model
-    options.add_argument('--disable-dev-shm-usage')  # Overcome limited resource problems
 
     username = os.environ.get('USER', os.environ.get('USERNAME'))
     os_platform = platform.platform().lower()
@@ -25,8 +22,8 @@ def get_driver():
         path_default = fr'/Users/{username}/Library/Application Support/Google/Chrome/Default'
     elif 'windows' in os_platform:
         path_default = fr'C:\Users\{username}\AppData\Local\Google\Chrome\User Data\Default'
-    elif 'linux' in os_platform or 'ubuntu' in os_platform:
-        path_default = os.path.expanduser('~/.config/google-chrome/Default')
+    elif 'linux' in os_platform:
+        path_default = '~/.config/google-chrome/Default'
     else:
         path_default = ''
 
@@ -36,7 +33,6 @@ def get_driver():
     driver = webdriver.Chrome(options=options, service=service)
 
     return driver
-
 
 
 def get_quotes(candles):

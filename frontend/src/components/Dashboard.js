@@ -12,21 +12,19 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const Dashboard = () => {
-  const [tradeSettings, setTradeSettings] = useState({
-    amount: 1,
-    asset: "EUR/USD",
-    duration: "60",
-    direction: "buy", // Added direction (buy/sell)
-  });
-
+const Dashboard = ({
+  isTradeStart,
+  setIsTradeStart,
+  tradeSettings,
+  setTradeSettings,
+}) => {
   const startTrade = async () => {
+    // alert(`Trade started`);
+    // setIsTradeStart(true);
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/start_trade`,
       tradeSettings
     );
-    // alert(`Trade executed: ${response.data.result || response.data.error}`);
-    alert(`Trade executed`);
   };
 
   return (
@@ -141,10 +139,10 @@ const Dashboard = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={startTrade}
+          onClick={!isTradeStart ? startTrade : () => {}}
           sx={{ mt: 2 }}
         >
-          Start Trade
+          {!isTradeStart ? <>Start Trade</> : <>Stop Trade</>}
         </Button>
       </CardContent>
     </Card>
