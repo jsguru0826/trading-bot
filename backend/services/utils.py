@@ -6,7 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from stock_indicators.indicators.common.quote import Quote
-
+from webdriver_manager.chrome import ChromeDriverManager  # Ensure webdriver_manager is installed
 
 def get_driver():
     options = Options()
@@ -14,26 +14,34 @@ def get_driver():
     options.add_argument('--ignore-ssl-errors')
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--ignore-certificate-errors-spki-list')
+    options.add_argument('--no-sandbox')  # Required for running in some environments
+    options.add_argument('--disable-dev-shm-usage')  # Overcomes limited resource problems
 
     username = os.environ.get('USER', os.environ.get('USERNAME'))
     os_platform = platform.platform().lower()
 
     if 'macos' in os_platform:
-        path_default = fr'/Users/{username}/Library/Application Support/Google/Chrome/Default'
+        path_default = os.path.expanduser(f'/Users/{username}/Library/Application Support/Google/Chrome/Default')
     elif 'windows' in os_platform:
-        path_default = fr'C:\Users\{username}\AppData\Local\Google\Chrome\User Data\Default'
+        path_default = os.path.expanduser(f'C:\\Users\\{username}\\AppData\\Local\\Google\\Chrome\\User Data\\Default')
     elif 'linux' in os_platform:
-        path_default = '~/.config/google-chrome/Default'
+        path_default = os.path.expanduser('~/.config/google-chrome/Default')
     else:
         path_default = ''
 
-    options.add_argument(fr'--user-data-dir={path_default}')
+    # Add a temporary user data directory to avoid conflicts
+    if 'linux' in os_platform:
+        options.add_argument('--user-data-dir=/tmp/chrome-user-data')  # Temporary dir for Linux
+    else:
+        options.add_argument(f'--user-data-dir={path_default}')
 
-    service = Service()
+    # Set up ChromeDriver service
+    service = Service(ChromeDriverManager().install())
+    
+    # Initialize the Chrome WebDriver
     driver = webdriver.Chrome(options=options, service=service)
 
     return driver
-
 
 def get_quotes(candles):
     quotes = []
