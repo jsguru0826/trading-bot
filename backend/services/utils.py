@@ -11,6 +11,8 @@ from webdriver_manager.chrome import ChromeDriverManager  # Ensure webdriver_man
 def get_driver():
     options = Options()
     options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
+    options.add_argument('--headless')  # Enable headless mode
+    options.add_argument('--disable-gpu')  # Disable GPU acceleration
     options.add_argument('--ignore-ssl-errors')
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--ignore-certificate-errors-spki-list')
@@ -26,6 +28,7 @@ def get_driver():
         path_default = os.path.expanduser(f'C:\\Users\\{username}\\AppData\\Local\\Google\\Chrome\\User Data\\Default')
     elif 'linux' in os_platform:
         path_default = os.path.expanduser('~/.config/google-chrome/Default')
+        options.binary_location = '/snap/bin/chromium'  # Set binary location for Snap
     else:
         path_default = ''
 
