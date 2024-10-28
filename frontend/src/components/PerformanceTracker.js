@@ -56,7 +56,7 @@ const PerformanceTracker = () => {
             </CardContent>
             <CardContent sx={{ pl: 0 }}>
               <Typography>PROFIT</Typography>
-              <Typography>{values?.[2].toFixed(2)}%</Typography>
+              <Typography>{values?.[2]?.toFixed(2)}%</Typography>
             </CardContent>
           </Box>
         )}
