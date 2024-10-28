@@ -63,6 +63,9 @@ TIME_NUMBERS = {
     "14400": "9"
 }
 TIME_FRAME = None
+BET_HISTORY = []
+STOP = False
+STATISTIC = []
 
 class BotManager:
     def __init__(self):
@@ -70,7 +73,9 @@ class BotManager:
     
 
     def load_web_driver(self, data):
-        global STACK, PERIOD, TRADE_AMOUNT, TIME_FRAME
+        global STACK, PERIOD, TRADE_AMOUNT, TIME_FRAME, STOP
+        
+        STOP = False
         # Assign values from input data
         TRADE_AMOUNT = data.get('amount', 1)  # Default to 1 if 'amount' not provided
         TIME_FRAME = data.get('duration', '60')  # Default to '60' if not provided
@@ -126,9 +131,14 @@ class BotManager:
             print(f"Error during web driver setup: {e}")
             self.driver.quit()  # Close the driver for safety if error occurs
 
-        # Start websocket logging and stack processing
-        while True:
-            STACK = self.websocket_log(STACK)
+        try:
+            # Start websocket logging and stack processing
+            while not STOP:
+                STACK = self.websocket_log(STACK)
+        finally:
+            # Ensure the driver is closed when STOP is set to True
+            print("Stopping driver...")
+            self.driver.quit()
             
     def close_setting_modal(self):
         closed_tab = self.driver.find_element(by=By.CSS_SELECTOR, value='#bar-chart > div > div > div.right-widget-container > div > div.widget-slot__header > div.divider > ul > li:nth-child(2) > a')
@@ -158,7 +168,7 @@ class BotManager:
         except:
             return
 
-        global ACTIONS, IS_AMOUNT_SET
+        global ACTIONS, IS_AMOUNT_SET, BET_HISTORY
         for dat in list(ACTIONS.keys()):
             if dat < datetime.now() - timedelta(seconds=ACTIONS_SECONDS):
                 del ACTIONS[dat]
@@ -178,6 +188,7 @@ class BotManager:
         if action:
             try:
                 print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {signal.upper()}, currency: {CURRENCY} last_value: {last_value}")
+                BET_HISTORY.insert(0, { "date": datetime.now().strftime('%Y-%m-%d %H:%M:%S'), "bet_type": signal.upper(), "currency": CURRENCY, "last_value": last_value })
                 self.driver.find_element(by=By.CLASS_NAME, value=f'btn-{signal}').click()
                 ACTIONS[datetime.now()] = last_value
                 IS_AMOUNT_SET = False
@@ -221,7 +232,7 @@ class BotManager:
         if 'exp-mode-2.svg' in time_style.get_attribute('data-src'):  # should be 'exp-mode-2.svg'
             time_style.click()  # switch time style
 
-        global IS_AMOUNT_SET, AMOUNTS, INIT_DEPOSIT
+        global IS_AMOUNT_SET, AMOUNTS, INIT_DEPOSIT, STATISTIC
 
         #  If this is the first time running, the initial deposit is set using the get_deposit_value function, which converts the deposit into a numeric value.
         if not INIT_DEPOSIT:
@@ -246,6 +257,7 @@ class BotManager:
             closed_trades = self.driver.find_elements(by=By.CLASS_NAME, value='deals-list__item')
             if closed_trades:
                 last_split = closed_trades[0].text.split('\n')
+                STATISTIC.insert(0, last_split)
                 try:
                     amount = self.driver.find_element(by=By.CSS_SELECTOR, value='#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--bet-amount > div.block__control.control > div.control__value.value.value--several-items > div > input[type=text]')
                     amount_value = int(amount.get_attribute('value'))
@@ -340,3 +352,13 @@ class BotManager:
     def get_stack(self):
         global STACK, CURRENCY
         return { "stack": STACK, "currency": CURRENCY }
+    
+    def get_performance(self):
+        global AMOUNTS, BET_HISTORY, STATISTIC
+        
+        return { "martingale_stack": AMOUNTS, "bet_history": BET_HISTORY, "statistic": STATISTIC }
+    
+    def trading_stop(self):
+        global STOP
+        STOP = True
+        return True

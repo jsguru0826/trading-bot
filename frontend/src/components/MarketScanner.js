@@ -23,7 +23,7 @@ const MarketScanner = () => {
     <Card sx={{ backgroundColor: "#2a3144", color: "white" }}>
       <CardContent>
         <Typography variant="h5" component="h2" sx={{ mb: 1 }}>
-          Market Opportunities
+          Market History
         </Typography>
         {/* <Button
           variant="contained"
@@ -49,7 +49,7 @@ const MarketScanner = () => {
               </div>
             ))
         ) : (
-          <Typography>No opportunities found.</Typography>
+          <Typography>No market history found.</Typography>
         )}
       </CardContent>
     </Card>

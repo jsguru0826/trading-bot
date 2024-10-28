@@ -36,9 +36,9 @@ function App() {
           <Button color="inherit" onClick={() => setActiveTab("dashboard")}>
             Dashboard
           </Button>
-          <Button color="inherit" onClick={() => setActiveTab("settings")}>
+          {/* <Button color="inherit" onClick={() => setActiveTab("settings")}>
             Settings
-          </Button>
+          </Button> */}
           <Button color="inherit" onClick={() => setActiveTab("market")}>
             Market Scanner
           </Button>
@@ -61,11 +61,11 @@ function App() {
             />
           </Grid>
         )}
-        {activeTab === "settings" && (
+        {/* {activeTab === "settings" && (
           <Grid item xs={12}>
             <Settings />
           </Grid>
-        )}
+        )} */}
         {activeTab === "market" && (
           <Grid item xs={12}>
             <MarketScanner />

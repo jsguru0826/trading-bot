@@ -38,11 +38,16 @@ def scan_market():
     stack = bot_manager.get_stack()
     return jsonify(stack)
 
-# @api.route('/get_performance', methods=['GET'])
-# def get_performance():
-#     """Returns performance stats of the bot."""
-#     performance_data = trade_manager.get_performance()
-#     return jsonify(performance_data)
+@api.route('/get_performance', methods=['GET'])
+def get_performance():
+    """Returns performance stats of the bot."""
+    performance_data = bot_manager.get_performance()
+    return jsonify(performance_data)
+
+@api.route('/trading_stop', methods=['GET'])
+def trading_stop():
+    res = bot_manager.trading_stop()
+    return jsonify({ "result": res })
 
 # Register the API blueprint with the Flask app
 app.register_blueprint(api)

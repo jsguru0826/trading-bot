@@ -30,8 +30,14 @@ const Dashboard = ({
     );
     setLoadingTradeStart(false);
     setIsTradeStart(true);
-    alert(`Trade started`);
+    // alert(`Trade started`);
   };
+
+  const stopTrade = async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/trading_stop`,
+    );
+  }
 
   return (
     <Card sx={{ backgroundColor: "#2a3144", color: "white" }}>
@@ -115,7 +121,7 @@ const Dashboard = ({
           </Select>
         </FormControl>
 
-        <FormControl fullWidth sx={{ mt: 1 }}>
+        {/* <FormControl fullWidth sx={{ mt: 1 }}>
           <InputLabel
             id="Direction"
             sx={{
@@ -140,18 +146,27 @@ const Dashboard = ({
             <MenuItem value="buy">Buy</MenuItem>
             <MenuItem value="sell">Sell</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl> */}
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 3, mt: 2 }}>
           <Button
             variant="contained"
             color="primary"
-            onClick={!isTradeStart ? startTrade : () => {}}
+            onClick={startTrade}
             disabled={loadingTradeStart}
           >
-            {!isTradeStart ? <>Start Trade</> : <>Stop Trade</>}
+            Start Trade
           </Button>
-          {loadingTradeStart && <><CircularProgress /><div>Starting...</div></>}
+          {loadingTradeStart && <><CircularProgress /><div>Starting...</div>
+          
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={stopTrade}
+          >
+            Stop Trade
+          </Button>
+          </>}
         </Box>
       </CardContent>
     </Card>
