@@ -90,11 +90,15 @@ class BotManager:
 
         try:
             
-            # Check if the current URL is the cabinet page
-            if self.driver.current_url == f'{BASE_URL}/en/cabinet/':
-                print("Logged in, navigating to demo trading page...")
-                self.driver.get(f'{BASE_URL}/en/cabinet/demo-quick-high-low/')  # Go to the demo trading URL
-
+            # Check if redirected to the login page
+            if self.driver.current_url == f'{BASE_URL}/en/login':
+                print("Waiting for login to complete...")
+                # Wait until login is completed and redirected to the cabinet page
+                wait.until(EC.url_contains(f'{BASE_URL}/en/cabinet/'))
+                print("Login successful, navigating to demo trading page...")
+            
+            # Proceed to the demo trading page after login
+            self.driver.get(f'{BASE_URL}/en/cabinet/demo-quick-high-low/')
             self.switch_time_style()
             
             print("Setting time frame...")
