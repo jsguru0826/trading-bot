@@ -86,7 +86,8 @@ class BotManager:
         self.driver.get(url)
 
         # Create WebDriverWait instance
-        wait = WebDriverWait(self.driver, 30)
+        wait_login = WebDriverWait(self.driver, 600)
+        wait = WebDriverWait(self.driver, 10)
 
         try:
             
@@ -94,7 +95,7 @@ class BotManager:
             if self.driver.current_url == f'{BASE_URL}/en/login':
                 print("Waiting for login to complete...")
                 # Wait until login is completed and redirected to the cabinet page
-                wait.until(EC.url_contains(f'{BASE_URL}/en/cabinet/'))
+                wait_login.until(EC.url_contains(f'{BASE_URL}/en/cabinet/'))
                 print("Login successful, navigating to demo trading page...")
             
             # Proceed to the demo trading page after login
