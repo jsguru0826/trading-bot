@@ -81,7 +81,7 @@ class BotManager:
         TIME_FRAME = data.get('duration', '60')  # Default to '60' if not provided
 
         # Initialize the web driver
-        url = f'{BASE_URL}/en/cabinet/demo-quick-high-low/'
+        url = f'{BASE_URL}/en/cabinet/'  # Start at the cabinet page
         self.driver = get_driver()
         self.driver.get(url)
 
@@ -89,6 +89,13 @@ class BotManager:
         wait = WebDriverWait(self.driver, 30)
 
         try:
+            
+            # Check if the current URL is the cabinet page
+            if self.driver.current_url == f'{BASE_URL}/en/cabinet/':
+                print("Logged in, navigating to demo trading page...")
+                self.driver.get(f'{BASE_URL}/en/cabinet/demo-quick-high-low/')  # Go to the demo trading URL
+
+            self.switch_time_style()
             
             print("Setting time frame...")
             # --------- Set Time Frame --------------
@@ -160,6 +167,11 @@ class BotManager:
         else:
             pass
 
+    def switch_time_style(self):
+        # The time_style element controls how the expiration time of the trade is displayed. If it’s not in the correct format (exp-mode-2.svg), the code clicks the button to switch it.
+        time_style = self.driver.find_element(by=By.CSS_SELECTOR, value='#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--expiration-inputs > div.block__control.control > div.control-buttons__wrapper > div > a > div > div > svg')
+        if 'exp-mode-2.svg' in time_style.get_attribute('data-src'):  # should be 'exp-mode-2.svg'
+            time_style.click()  # switch time style
 
     def do_action(self, signal):
         action = True
@@ -227,10 +239,7 @@ class BotManager:
         except Exception as e:
             print(e)
 
-        # The time_style element controls how the expiration time of the trade is displayed. If it’s not in the correct format (exp-mode-2.svg), the code clicks the button to switch it.
-        time_style = self.driver.find_element(by=By.CSS_SELECTOR, value='#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--expiration-inputs > div.block__control.control > div.control-buttons__wrapper > div > a > div > div > svg')
-        if 'exp-mode-2.svg' in time_style.get_attribute('data-src'):  # should be 'exp-mode-2.svg'
-            time_style.click()  # switch time style
+        self.switch_time_style()
 
         global IS_AMOUNT_SET, AMOUNTS, INIT_DEPOSIT, STATISTIC
 
