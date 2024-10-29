@@ -4,7 +4,7 @@ APP = ['app.py']
 DATA_FILES = []
 OPTIONS = {
     'argv_emulation': True,
-    'packages': [pkg.strip() for pkg in open('requirements.txt').readlines()],
+    'packages': ['flask', 'flask_cors', 'pandas', 'scikit-learn', 'selenium', 'stock-indicators'],
 }
 
 setup(
