@@ -45,6 +45,33 @@ const Dashboard = ({
         <Typography variant="h5" component="h2">
           Start a New Trade
         </Typography>
+        <FormControl fullWidth sx={{ mt: 2 }}>
+          <InputLabel
+            id="Direction"
+            sx={{
+              color: "white",
+            }}
+          >
+            Quick Trading
+          </InputLabel>
+          <Select
+            labelId="Direction"
+            id="demo-simple-select"
+            value={tradeSettings.is_live}
+            label="Quick Trading"
+            onChange={(e) =>
+              setTradeSettings({ ...tradeSettings, is_live: e.target.value })
+            }
+            sx={{
+              backgroundColor: "#1f2334",
+              color: "white",
+            }}
+            defaultValue={false}
+          >
+            <MenuItem value={false}>Demo</MenuItem>
+            <MenuItem value={true}>Live</MenuItem>
+          </Select>
+        </FormControl>
         <TextField
           label="Amount"
           type="number"

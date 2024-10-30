@@ -45,6 +45,15 @@ const PerformanceTracker = () => {
           Get Performance
         </Button>
         {performance && (
+          <div
+            key={index}
+            style={{ display: "flex", gap: 20, marginTop: 10 }}
+          >
+            <Typography>Martingale Stack:</Typography>
+            <Typography>{performance.martingale_stack}</Typography>
+          </div>
+        )}
+        {performance && (
           <Box sx={{ display: "flex", gap: 20 }}>
             <CardContent sx={{ pl: 0 }}>
               <Typography>WINS</Typography>

@@ -45,6 +45,7 @@ NUMBERS = {
     '7': '1',
     '8': '2',
     '9': '3',
+    '.': '10',
 }
 IS_AMOUNT_SET = True
 AMOUNTS = []  # 1, 3, 8, 18, 39, 82, 172
@@ -66,6 +67,7 @@ TIME_FRAME = None
 BET_HISTORY = []
 STOP = False
 STATISTIC = []
+IS_LIVE = False
 
 class BotManager:
     def __init__(self):
@@ -73,12 +75,13 @@ class BotManager:
     
 
     def load_web_driver(self, data):
-        global STACK, PERIOD, TRADE_AMOUNT, TIME_FRAME, STOP
+        global STACK, PERIOD, TRADE_AMOUNT, TIME_FRAME, STOP, IS_LIVE
         
         STOP = False
         # Assign values from input data
         TRADE_AMOUNT = data.get('amount', 1)  # Default to 1 if 'amount' not provided
         TIME_FRAME = data.get('duration', '60')  # Default to '60' if not provided
+        IS_LIVE = data.get('is_live', False)
 
         # Initialize the web driver
         url = f'{BASE_URL}/en/cabinet/'  # Start at the cabinet page
@@ -87,7 +90,7 @@ class BotManager:
 
         # Create WebDriverWait instance
         wait_login = WebDriverWait(self.driver, 600)
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, 15)
 
         try:
             
@@ -99,7 +102,10 @@ class BotManager:
                 print("Login successful, navigating to demo trading page...")
             
             # Proceed to the demo trading page after login
-            self.driver.get(f'{BASE_URL}/en/cabinet/demo-quick-high-low/')
+            if not IS_LIVE:
+                self.driver.get(f'{BASE_URL}/en/cabinet/demo-quick-high-low/')
+            
+            time.sleep(10)
             self.switch_time_style()
             
             print("Setting time frame...")
@@ -225,7 +231,7 @@ class BotManager:
             amount = 20000
         amounts = []
         while True:
-            amount = int(amount / MARTINGALE_COEFFICIENT)
+            amount = round(amount / MARTINGALE_COEFFICIENT, 2)
             amounts.insert(0, amount)
             if amounts[0] <= 1:
                 amounts[0] = 1
@@ -274,7 +280,7 @@ class BotManager:
                 STATISTIC.insert(0, last_split)
                 try:
                     amount = self.driver.find_element(by=By.CSS_SELECTOR, value='#put-call-buttons-chart-1 > div > div.blocks-wrap > div.block.block--bet-amount > div.block__control.control > div.control__value.value.value--several-items > div > input[type=text]')
-                    amount_value = int(amount.get_attribute('value'))
+                    amount_value = float(amount.get_attribute('value'))
                     base = '#modal-root > div > div > div > div > div.trading-panel-modal__in > div.virtual-keyboard > div > div:nth-child(%s) > div'
                     if '$0' != last_split[4]:  # win
                         if amount_value > 1:

@@ -16,11 +16,13 @@ def start_trade():
     amount = data.get('amount', 1)
     asset = data.get('asset', 'EUR/USD')
     duration = data.get('duration', 60)
+    is_live = data.get('is_live', False)
     
     data = {
         "amount": int(amount),
         "asset": asset,
-        "duration": duration
+        "duration": duration,
+        "is_live": is_live,
     }
     bot_manager.load_web_driver(data)
     
