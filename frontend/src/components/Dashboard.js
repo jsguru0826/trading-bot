@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -15,7 +15,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 
 const Dashboard = ({
-  isTradeStart,
   setIsTradeStart,
   tradeSettings,
   setTradeSettings,
@@ -78,6 +77,9 @@ const Dashboard = ({
           value={tradeSettings.amount}
           onChange={(e) =>
             setTradeSettings({ ...tradeSettings, amount: e.target.value })
+          }
+          onBlur={(e) =>
+            setTradeSettings({ ...tradeSettings, amount: e.target.value > 1 ? e.target.value : 1 })
           }
           fullWidth
           margin="normal"

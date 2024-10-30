@@ -46,11 +46,10 @@ const PerformanceTracker = () => {
         </Button>
         {performance && (
           <div
-            key={index}
             style={{ display: "flex", gap: 20, marginTop: 10 }}
           >
             <Typography>Martingale Stack:</Typography>
-            <Typography>{performance.martingale_stack}</Typography>
+            <Typography>{performance.martingale_stack.join()}</Typography>
           </div>
         )}
         {performance && (

@@ -226,6 +226,7 @@ class BotManager:
 
     # martingale straregic
     def get_amounts(self, amount):
+        global TRADE_AMOUNT
         print(amount, "amount")
         if amount > 20000:
             amount = 20000
@@ -233,8 +234,8 @@ class BotManager:
         while True:
             amount = round(amount / MARTINGALE_COEFFICIENT, 2)
             amounts.insert(0, amount)
-            if amounts[0] <= 1:
-                amounts[0] = 1
+            if amounts[0] <= TRADE_AMOUNT:
+                amounts[0] = TRADE_AMOUNT
                 print('Martingale stack:', amounts, 'init deposit:', INIT_DEPOSIT)
                 return amounts
 
@@ -283,10 +284,14 @@ class BotManager:
                     amount_value = float(amount.get_attribute('value'))
                     base = '#modal-root > div > div > div > div > div.trading-panel-modal__in > div.virtual-keyboard > div > div:nth-child(%s) > div'
                     if '$0' != last_split[4]:  # win
-                        if amount_value > 1:
+                        if amount_value > TRADE_AMOUNT:
                             amount.click()
                             self.hand_delay()
-                            self.driver.find_element(by=By.CSS_SELECTOR, value=base % NUMBERS['1']).click()
+                            
+                            for number in str(TRADE_AMOUNT):
+                                self.driver.find_element(by=By.CSS_SELECTOR, value=base % NUMBERS[number]).click()
+                                self.hand_delay()
+                                
                             AMOUNTS = self.get_amounts(self.get_deposit_value(deposit))  # refresh amounts
                     elif '$0' != last_split[3]:  # draw
                         pass
@@ -298,9 +303,10 @@ class BotManager:
                             for number in str(next_amount):
                                 self.driver.find_element(by=By.CSS_SELECTOR, value=base % NUMBERS[number]).click()
                                 self.hand_delay()
-                        else:  # reset to 1
-                            self.driver.find_element(by=By.CSS_SELECTOR, value=base % NUMBERS['1']).click()
-                            self.hand_delay()
+                        else:  # reset to initial amount
+                            for number in str(TRADE_AMOUNT):
+                                self.driver.find_element(by=By.CSS_SELECTOR, value=base % NUMBERS[number]).click()
+                                self.hand_delay()
                     closed_tab_parent.click()
                 except Exception as e:
                     print(e)

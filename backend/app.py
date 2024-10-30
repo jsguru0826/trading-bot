@@ -19,7 +19,7 @@ def start_trade():
     is_live = data.get('is_live', False)
     
     data = {
-        "amount": int(amount),
+        "amount": float(amount),
         "asset": asset,
         "duration": duration,
         "is_live": is_live,
